@@ -1,0 +1,27 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "This is a simple CLI app designed to resemble a much scaled down Amazon shopping experience.",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisjones0517/bamazon.git"
+  },
+  "author": "Chris Jones",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrisjones0517/bamazon/issues"
+  },
+  "homepage": "https://github.com/chrisjones0517/bamazon#readme",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "cli-table": "^0.3.1",
+    "dotenv": "^5.0.1",
+    "inquirer": "^5.2.0",
+    "mysql": "^2.15.0",
+    "npm": "^5.8.0"
+  }
+}
