@@ -57,9 +57,9 @@ function shop() {
             ]).then(answers => {
                 let idArr = answers.product_choice.split(' ');
                 let id = idArr[0];
-                connection.query(`SELECT * FROM bamazon.products WHERE item_id = ${id};`, function (error, results, fields) {
+                connection.query('SELECT * FROM bamazon.products WHERE item_id = ?;', [id], function (error, results, fields) {
                     if (results[0].stock_quantity >= answers.numItems) {
-                        console.log(`${answers.product_choice} - quantity ${answers.numItems} has been added to your cart.`);
+                        console.log(chalk.blue(answers.product_choice), chalk.yellow(` - quantity ${answers.numItems} has been added to your cart.`));
                         userCart.items.push(answers.product_choice);
                         userCart.qty.push(answers.numItems);
                         userCart.total += answers.numItems * results[0].price;

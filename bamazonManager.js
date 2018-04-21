@@ -110,14 +110,14 @@ function increaseInventory() {
         let stockID = parseInt(answers.restockID);
         let stockQty = parseInt(answers.restockQty);
         let exists = false;
-        connection.query(`SELECT * FROM bamazon.products WHERE item_id=${stockID};`, function (error, results, fields) {
+        connection.query('SELECT * FROM bamazon.products WHERE item_id=?;', [stockID], function (error, results, fields) {
             if (error) throw error;
 
             if (results[0] !== undefined) {
                 exists = true;
             }
         });
-        connection.query(`UPDATE bamazon.products SET stock_quantity=stock_quantity + ${stockQty} WHERE item_id=${stockID};`, function (error, results, fields) {
+        connection.query('UPDATE bamazon.products SET stock_quantity=stock_quantity + ? WHERE item_id=?;', [stockQty, stockID], function (error, results, fields) {
             if (error) throw error;
             if (exists) {
                 console.log(chalk.yellow('Stock updated successfully!'));
@@ -160,9 +160,9 @@ function addNewProduct() {
             validate: myValidation
         }
     ]).then(answers => {
-        connection.query(`INSERT INTO bamazon.products (product_name, product_description, department_name, price, stock_quantity, product_sales) VALUES ('${answers.name}', '${answers.description}', '${answers.department}', ${answers.price}, ${answers.stock}, 0);`, function (error, results, fields) {
+        connection.query('INSERT INTO bamazon.products (product_name, product_description, department_name, price, stock_quantity, product_sales) VALUES (?, ?, ?, ?, ?, 0);', [answers.name, answers.description, answers.department, answers.price, answers.stock], function (error, results, fields) {
             if (error) throw error;
-            console.log('New product successfully added!');
+            console.log(chalk.yellow('New product successfully added!'));
             manage();
         });
     });
@@ -196,14 +196,14 @@ function removeProduct() {
     ]).then(answers => {
         let productID = parseInt(answers.idToRemove);
         let exists = false;
-        connection.query(`SELECT * FROM bamazon.products WHERE item_id=${productID};`, function (error, results, fields) {
+        connection.query('SELECT * FROM bamazon.products WHERE item_id=?;', [productID], function (error, results, fields) {
             if (error) throw error;
 
             if (results[0] !== undefined) {
                 exists = true;
             }
         });
-        connection.query(`DELETE FROM bamazon.products WHERE item_id=${productID};`, function (error, results, fields) {
+        connection.query('DELETE FROM bamazon.products WHERE item_id=?;', [productID], function (error, results, fields) {
             if (error) throw error;
             if (exists) {
                 console.log(chalk.yellow('Product deleted successfully!'));

@@ -48,7 +48,7 @@ function supervise() {
         }
     ]).then(answers => {
         if (answers.menu === 'View Product Sales by Department') {
-            connection.query('SELECT departments.department_id, departments.department_name, departments.over_head_costs, newTable.productSales FROM bamazon.departments INNER JOIN (SELECT department_name, SUM(product_sales) AS productSales FROM bamazon.products GROUP BY department_name) AS newTable ON departments.department_name=newTable.department_name;', function (error, results, fields) {
+            connection.query('SELECT departments.department_id, departments.department_name, departments.over_head_costs, newTable.productSales FROM bamazon.departments INNER JOIN (SELECT department_name, SUM(product_sales) AS productSales FROM bamazon.products GROUP BY department_name) AS newTable ON departments.department_name=newTable.department_name ORDER BY productSales DESC;', function (error, results, fields) {
                 if (error) throw error;
 
                 let profit;
@@ -70,7 +70,7 @@ function supervise() {
         }
     });
 }
- 
+
 function createNewDept() {
     inquirer.prompt([
         {
@@ -85,12 +85,22 @@ function createNewDept() {
             validate: myValidation
         }
     ]).then(answers => {
-        connection.query(`INSERT INTO bamazon.departments (department_name, over_head_costs) VALUES ('${answers.deptName}', ${answers.overhead})`, function (error, results, fields) {
+        connection.query('SELECT * FROM bamazon.departments WHERE ?=department_name', [answers.deptName], function (error, results, fields) {
             if (error) throw error;
-            console.log(chalk.yellow('New department was added successfully!'));
-            console.log('NOTE: Manager must add new product to instantiate new department into sales view.');
-            supervise();
+            if (results[0]) {
+                console.log(results[0]);
+                console.log(chalk.red('Sorry, that department name is already in use. Please try another name.'));
+                supervise();
+            } else {
+                connection.query('INSERT INTO bamazon.departments (department_name, over_head_costs) VALUES (?, ?)', [answers.deptName, answers.overhead], function (error, results, fields) {
+                    if (error) throw error;
+                    console.log(chalk.yellow('New department was added successfully!'));
+                    console.log('NOTE: Manager must add new product inside this department to instantiate new department into sales view.');
+                    supervise();
+                });
+            }
         });
     });
 }
+
 
